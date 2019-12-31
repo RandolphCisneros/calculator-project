@@ -11,6 +11,7 @@ const inputSectionId = "inputSection";
 
 let operationStack = [];
 let displayText = "";
+let postOperator = false;
 
 initializeInnerContainers();
 
@@ -76,7 +77,7 @@ function attemptCreateSpecialButtonDiv(specialButton) {
             displayText = "";
             inputSection.value = displayText;
             operationStack = [];
-        })
+        });
     }
     buttonDiv.appendChild(button);
     return buttonDiv;
@@ -91,7 +92,8 @@ function createOperatorButtonDiv(operator){
         if(!isNaN(displayText)){
             operationStack.push(parseInt(displayText));
             operationStack.push(button.textContent);
-            displayText = "";
+            //displayText = "";
+            postOperator = true;
             console.log(operationStack);
         } else {
             console.log("Not a number. Clear and try again.");
@@ -108,13 +110,23 @@ function createNumberButtonDiv(number){
     let button = document.createElement('button');
     button.textContent = number;
     button.addEventListener("click", () => {
-        displayText += button.textContent;
-        let inputSection = document.getElementById(inputSectionId);
-        inputSection.value = displayText;
+        if(postOperator == true) {
+            displayText = "";
+            updateDisplay(button);
+            postOperator = false;
+        } else {
+            updateDisplay(button);
+        }
     });
 
     buttonDiv.appendChild(button);
     return buttonDiv;
+}
+
+function updateDisplay(button) {
+    displayText += button.textContent;
+    let inputSection = document.getElementById(inputSectionId);
+    inputSection.value = displayText;
 }
 
 function initializeFormRow(){
