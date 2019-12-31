@@ -11,7 +11,8 @@ const inputSectionId = "inputSection";
 
 let operationStack = [];
 let displayText = "";
-let postOperator = false;
+let postOperatorInput = false;
+let postOperation = false;
 
 initializeInnerContainers();
 
@@ -70,6 +71,7 @@ function attemptCreateSpecialButtonDiv(specialButton) {
                 displayText = operate(operationStack[1], operationStack[0], operationStack[2]);
                 inputSection.value = displayText;
                 operationStack = [];
+                postOperation = true;
             }
         });
     } else if (specialButton == "clear") {
@@ -92,8 +94,7 @@ function createOperatorButtonDiv(operator){
         if(!isNaN(displayText)){
             operationStack.push(parseInt(displayText));
             operationStack.push(button.textContent);
-            //displayText = "";
-            postOperator = true;
+            postOperatorInput = true;
             console.log(operationStack);
         } else {
             console.log("Not a number. Clear and try again.");
@@ -110,10 +111,11 @@ function createNumberButtonDiv(number){
     let button = document.createElement('button');
     button.textContent = number;
     button.addEventListener("click", () => {
-        if(postOperator == true) {
+        if(postOperatorInput || postOperation) {
             displayText = "";
             updateDisplay(button);
-            postOperator = false;
+            postOperatorInput = false;
+            postOperation = false;
         } else {
             updateDisplay(button);
         }
