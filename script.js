@@ -40,16 +40,16 @@ function initializeRow(inputArray) {
     calcRow++;
 
     for(var i = 0; i < inputArray.length; i++){
+        let buttonDiv = null;
         if(!isNaN(inputArray[i])){
-            let buttonDiv = createNumberButtonDiv(inputArray[i]);
-            buttonDiv.className = buttonDivClassName;
-            rowDiv.appendChild(buttonDiv);
+            buttonDiv = createNumberButtonDiv(inputArray[i]);
         } else if (operatorMapInitialized && operatorMap.has(inputArray[i])){
-            let buttonDiv = createOperatorButtonDiv(inputArray[i]);
-            buttonDiv.className = buttonDivClassName;
-            rowDiv.appendChild(buttonDiv);
+            buttonDiv = createOperatorButtonDiv(inputArray[i]);
         } else {
-            let buttonDiv = attemptCreateSpecialButtonDiv(inputArray[i]);
+            buttonDiv = attemptCreateSpecialButtonDiv(inputArray[i]);
+        }
+
+        if(null != buttonDiv) {
             buttonDiv.className = buttonDivClassName;
             rowDiv.appendChild(buttonDiv);
         }
@@ -84,7 +84,7 @@ function attemptCreateSpecialButtonDiv(specialButton) {
 
 function createOperatorButtonDiv(operator){
     let buttonDiv = document.createElement('div');
-    buttonDiv.id = "button" + operatorMap.get(operator);
+    buttonDiv.id = "button" + operatorMap.get(operator).name;
     let button = document.createElement('button');
     button.textContent = operator;
     button.addEventListener("click", () => {
