@@ -1,19 +1,53 @@
 .calcRowDiv {
     display: flex;
     flex-grow: 1;
+    height: 20%;
+    width: 100%;
+}
+
+.calcButtonDiv {
+    width: 100%;
 }
 
 #inputSection {
-    display:flex;
+    display: flex;
     border-radius: 25px;
     border-color: lightskyblue;
     color: lightskyblue;
     text-align: right;
+    width: 100%;
+    height: 100%;
+}
+
+.readOnlyForm {
+    height: 100%;
+}
+
+#screenContainer {
+    display: inline-block;
+    flex-grow: 1;
+    height: 100%;
+    width: 100%;
+}
+
+.topRowDiv {
+    width: 100%;
+    height: 20%;
 }
 
 button {
     color: lightskyblue;
     border-color: lightskyblue;
     border-radius: 25px;
-    background-color: white;
+    background-color: whitesmoke;
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    height: 100%;
+}
+
+html {
+    height: 100%;
 }

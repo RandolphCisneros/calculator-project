@@ -6,6 +6,7 @@ var operatorMap = new Map();
 const rowContainerClassName = "rowContainer";
 const topRowClassName = "topRowDiv";
 const calcRowDivClassName = "calcRowDiv";
+const buttonDivClassName = "calcButtonDiv";
 const inputSectionId = "inputSection";
 
 let operationStack = [];
@@ -13,6 +14,7 @@ let displayText = "";
 let calcRow = 1;
 let operationSubstring = "";
 let secondInput = false;
+let rowCount = 0;
 
 initializeInnerContainers();
 
@@ -40,12 +42,15 @@ function initializeRow(inputArray) {
     for(var i = 0; i < inputArray.length; i++){
         if(!isNaN(inputArray[i])){
             let buttonDiv = createNumberButtonDiv(inputArray[i]);
+            buttonDiv.className = buttonDivClassName;
             rowDiv.appendChild(buttonDiv);
         } else if (operatorMapInitialized && operatorMap.has(inputArray[i])){
             let buttonDiv = createOperatorButtonDiv(inputArray[i]);
+            buttonDiv.className = buttonDivClassName;
             rowDiv.appendChild(buttonDiv);
         } else {
             let buttonDiv = attemptCreateSpecialButtonDiv(inputArray[i]);
+            buttonDiv.className = buttonDivClassName;
             rowDiv.appendChild(buttonDiv);
         }
     }
