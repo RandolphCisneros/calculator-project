@@ -4,72 +4,72 @@ var operatorMapInitialized = false;
 var operatorMap = new Map();
 
 const rowContainerClassName = "rowContainer";
-const topRowClassName = "topRowDiv";
-const calcRowDivClassName = "calcRowDiv";
+const formRowClassName = "topRowDiv";
+const buttonRowDivClassName = "calcRowDiv";
 const buttonDivClassName = "calcButtonDiv";
 const inputSectionId = "inputSection";
 
 let operationStack = [];
 let displayText = "";
-let calcRow = 1;
-let operationSubstring = "";
-let secondInput = false;
-let rowCount = 0;
 
 initializeInnerContainers();
 
 function initializeInnerContainers() {
     intializeOperatorMap();
-    checkOrInitializeTopRow();
+    initializeAllRows();
 }
 
-function checkOrInitializeTopRow() {
+function initializeAllRows() {
     if (document.getElementsByClassName('topRowDiv').length === 0) {
-        initializeTopRow();
+        initializeFormRow();
     }
-    initializeRow(['7', '8', '9', '*']);
-    initializeRow(['4', '5', '6', '-']);
-    initializeRow(['1', '2', '3', '+']);
-    initializeRow(['clear', '0', '=', '/']);
+    initializeButtonRow(['7', '8', '9', '*']);
+    initializeButtonRow(['4', '5', '6', '-']);
+    initializeButtonRow(['1', '2', '3', '+']);
+    initializeButtonRow(['clear', '0', '=', '/']);
 }
 
-function initializeRow(inputArray) {
+function initializeButtonRow(inputArray) {
     let rowDiv = document.createElement('div');
-    rowDiv.className = calcRowDivClassName;
-    rowDiv.id = calcRowDivClassName + calcRow;
-    calcRow++;
+    rowDiv.className = buttonRowDivClassName;
 
     for(var i = 0; i < inputArray.length; i++){
-        let buttonDiv = null;
-        if(!isNaN(inputArray[i])){
-            buttonDiv = createNumberButtonDiv(inputArray[i]);
-        } else if (operatorMapInitialized && operatorMap.has(inputArray[i])){
-            buttonDiv = createOperatorButtonDiv(inputArray[i]);
-        } else {
-            buttonDiv = attemptCreateSpecialButtonDiv(inputArray[i]);
-        }
+        let buttonDiv = generateButtonDivByCharacter(inputArray, i);
 
         if(null != buttonDiv) {
             buttonDiv.className = buttonDivClassName;
             rowDiv.appendChild(buttonDiv);
+        } else {
+            console.log("Unappended button: "  + inputArray[i]);
         }
     }
     screenContainer.appendChild(rowDiv);
 }
 
+function generateButtonDivByCharacter(inputArray, i) {
+    let buttonDiv = null;
+    if (!isNaN(inputArray[i])) {
+        buttonDiv = createNumberButtonDiv(inputArray[i]);
+    } else if (operatorMapInitialized && operatorMap.has(inputArray[i])) {
+        buttonDiv = createOperatorButtonDiv(inputArray[i]);
+    } else {
+        buttonDiv = attemptCreateSpecialButtonDiv(inputArray[i]);
+    }
+    return buttonDiv;
+}
+
 function attemptCreateSpecialButtonDiv(specialButton) {
     let buttonDiv = document.createElement('div');
-    buttonDiv.id = "button" + specialButton;
     let button = document.createElement('button');
     button.textContent = specialButton;
     if(specialButton == "=") {
         button.addEventListener("click", () => {
-            if(!isNaN(displayText)){
+            if(!isNaN(displayText) && null != operationStack[1]){
                 operationStack.push(parseInt(displayText));
+                displayText = operate(operationStack[1], operationStack[0], operationStack[2]);
+                inputSection.value = displayText;
+                operationStack = [];
             }
-            displayText = operate(operationStack[1], operationStack[0], operationStack[2]);
-            inputSection.value = displayText;
-            operationStack = [];
         });
     } else if (specialButton == "clear") {
         button.addEventListener("click", () => {
@@ -105,7 +105,6 @@ function createOperatorButtonDiv(operator){
 
 function createNumberButtonDiv(number){
     let buttonDiv = document.createElement('div');
-    buttonDiv.id = "button" + number;
     let button = document.createElement('button');
     button.textContent = number;
     button.addEventListener("click", () => {
@@ -113,18 +112,19 @@ function createNumberButtonDiv(number){
         let inputSection = document.getElementById(inputSectionId);
         inputSection.value = displayText;
     });
+
     buttonDiv.appendChild(button);
     return buttonDiv;
 }
 
-function initializeTopRow(){
-    let topRow = document.createElement('div');
-    topRow.className = topRowClassName;
+function initializeFormRow(){
+    let formRow = document.createElement('div');
+    formRow.className = formRowClassName;
     let readOnlyForm = document.createElement('form');
     initializeReadOnlyForm(readOnlyForm);
-    topRow.appendChild(readOnlyForm);
+    formRow.appendChild(readOnlyForm);
 
-    screenContainer.appendChild(topRow);
+    screenContainer.appendChild(formRow);
 }
 
 function initializeReadOnlyForm(readOnlyForm) {
@@ -133,24 +133,17 @@ function initializeReadOnlyForm(readOnlyForm) {
     inputSection.id = inputSectionId;
     inputSection.type = "text";
     inputSection.readOnly = true;
+
     readOnlyForm.appendChild(inputSection);
 }
 
-function add(input1, input2) {
-    return input1 + input2;
-}
+function add(input1, input2) {return input1 + input2;}
 
-function subtract(input1, input2) {
-    return input1 - input2;
-}
+function subtract(input1, input2) {return input1 - input2;}
 
-function multiply(input1, input2) {
-    return input1 * input2;
-}
+function multiply(input1, input2) {return input1 * input2;}
 
-function divide(input1, input2) {
-    return input2 != 0 ? input1 / input2 : "ERROR divided by zero";
-}
+function divide(input1, input2) {return input2 != 0 ? input1 / input2 : "ERROR divided by zero";}
 
 function intializeOperatorMap() {
     operatorMap.set('+', add);
