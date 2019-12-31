@@ -1,0 +1,19 @@
+.calcRowDiv {
+    display: flex;
+    flex-grow: 1;
+}
+
+#inputSection {
+    display:flex;
+    border-radius: 25px;
+    border-color: lightskyblue;
+    color: lightskyblue;
+    text-align: right;
+}
+
+button {
+    color: lightskyblue;
+    border-color: lightskyblue;
+    border-radius: 25px;
+    background-color: white;
+}
